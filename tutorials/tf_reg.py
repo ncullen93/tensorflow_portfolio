@@ -20,11 +20,11 @@ loss = tf.add(base_loss, total_reg_loss, name="loss")
 
 # WITH ARG SCOPE 
 with arg_scope(
-		[fully_connected],
-		weights_regularizer=tf.contrib.layers.l1_regularizer(scale=0.01)):
-	hidden1 = fully_connected(X, n_hidden1, scope="hidden1")
-	hidden2 = fully_connected(hidden1, n_hidden2, scope="hidden2")
-	logits = fully_connected(hidden2, n_outputs, activation_fn=None,scope="out")
+        [fully_connected],
+        weights_regularizer=tf.contrib.layers.l1_regularizer(scale=0.01)):
+    hidden1 = fully_connected(X, n_hidden1, scope="hidden1")
+    hidden2 = fully_connected(hidden1, n_hidden2, scope="hidden2")
+    logits = fully_connected(hidden2, n_outputs, activation_fn=None,scope="out")
 
 # then add to loss as such:
 reg_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
@@ -47,17 +47,17 @@ from tensorflow.contrib.framework import arg_scope
 
 X = tf.placeholder(tf.float32, shape=(1000,100), name='x')
 with arg_scope(
-		[fully_connected],
-		weights_regularizer=tf.contrib.layers.l1_regularizer(scale=0.01)):
-	hidden1 = fully_connected(X, 50, scope="hidden1")
-	hidden2 = fully_connected(hidden1, 30, scope="hidden2")
-	logits 	= fully_connected(hidden2, 10, activation_fn=None, scope="out")
+        [fully_connected],
+        weights_regularizer=tf.contrib.layers.l1_regularizer(scale=0.01)):
+    hidden1 = fully_connected(X, 50, scope="hidden1")
+    hidden2 = fully_connected(hidden1, 30, scope="hidden2")
+    logits  = fully_connected(hidden2, 10, activation_fn=None, scope="out")
 
 init = tf.global_variables_initializer()
 sess = tf.InteractiveSession()
 sess.run(init)
 with tf.variable_scope("hidden1", reuse=True):
-	weights1 = tf.get_variable("weights")
+    weights1 = tf.get_variable("weights")
 print sess.run(weights1)
 sess.close()
 
@@ -67,11 +67,11 @@ for variable in tf.all_variables():
 
 # OR use this, but drop the index after the colon (e.g. use weights1 not weights1:0)
 for variable in tf.trainable_variables():
-	print variable.name
+    print variable.name
 
 # OR:
 for variable in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES):
-	print variable.name
+    print variable.name
 
 
 ### MAX NORM (CUSTOM) REGULARIZER ON WEIGHTS ###

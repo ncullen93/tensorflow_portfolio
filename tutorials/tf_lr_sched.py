@@ -22,9 +22,9 @@ learning_rate = tf.train.exponential_decay(initial_learning_rate, global_step,
 init = tf.global_variables_initializer()
 vals = []
 with tf.Session() as sess:
-	sess.run(init)
-	for epoch in range(decay_steps):
-		vals.append(sess.run(learning_rate, feed_dict={global_step:epoch}))
+    sess.run(init)
+    for epoch in range(decay_steps):
+        vals.append(sess.run(learning_rate, feed_dict={global_step:epoch}))
 
 import matplotlib.pyplot as plt
 %matplotlib inline

@@ -24,42 +24,42 @@ keep_prob = tf.placeholder(tf.float32) #dropout (keep probability)
  
 # Create some wrappers for simplicity 
 def conv2d(x, W, b, strides=1): 
-	# Conv2D wrapper, with bias and relu activation 
-	x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding='SAME') 
-	x = tf.nn.bias_add(x, b) 
-	return tf.nn.relu(x) 
+    # Conv2D wrapper, with bias and relu activation 
+    x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding='SAME') 
+    x = tf.nn.bias_add(x, b) 
+    return tf.nn.relu(x) 
 
 def maxpool2d(x, k=2): 
-	# MaxPool2D wrapper 
-	return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1], 
-						  padding='SAME')
+    # MaxPool2D wrapper 
+    return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1], 
+                          padding='SAME')
 
 # Create model 
 def conv_net(x, weights, biases, dropout): 
-	# Reshape input picture 
-	x = tf.reshape(x, shape=[-1, 28, 28, 1]) 
+    # Reshape input picture 
+    x = tf.reshape(x, shape=[-1, 28, 28, 1]) 
  
-	# Convolution Layer 
-	conv1 = conv2d(x, weights['wc1'], biases['bc1']) 
-	# Max Pooling (down-sampling) 
-	conv1 = maxpool2d(conv1, k=2) 
+    # Convolution Layer 
+    conv1 = conv2d(x, weights['wc1'], biases['bc1']) 
+    # Max Pooling (down-sampling) 
+    conv1 = maxpool2d(conv1, k=2) 
  
-	# Convolution Layer 
-	conv2 = conv2d(conv1, weights['wc2'], biases['bc2']) 
-	# Max Pooling (down-sampling) 
-	conv2 = maxpool2d(conv2, k=2)
+    # Convolution Layer 
+    conv2 = conv2d(conv1, weights['wc2'], biases['bc2']) 
+    # Max Pooling (down-sampling) 
+    conv2 = maxpool2d(conv2, k=2)
  
-	# Fully connected layer 
-	# Reshape conv2 output to fit fully connected layer input 
-	fc1 = tf.reshape(conv2, [-1, weights['wd1'].get_shape().as_list()[0]]) 
-	fc1 = tf.add(tf.matmul(fc1, weights['wd1']), biases['bd1']) 
-	fc1 = tf.nn.relu(fc1)
-	# Apply Dropout 
-	fc1 = tf.nn.dropout(fc1, dropout) 
+    # Fully connected layer 
+    # Reshape conv2 output to fit fully connected layer input 
+    fc1 = tf.reshape(conv2, [-1, weights['wd1'].get_shape().as_list()[0]]) 
+    fc1 = tf.add(tf.matmul(fc1, weights['wd1']), biases['bd1']) 
+    fc1 = tf.nn.relu(fc1)
+    # Apply Dropout 
+    fc1 = tf.nn.dropout(fc1, dropout) 
  
-	# Output, class prediction 
-	out = tf.add(tf.matmul(fc1, weights['out']), biases['out']) 
-	return out 
+    # Output, class prediction 
+    out = tf.add(tf.matmul(fc1, weights['out']), biases['out']) 
+    return out 
 # Store layers weight & bias 
 weights = { 
 # 5x5 conv, 1 input, 32 outputs 
@@ -96,26 +96,26 @@ init = tf.initialize_all_variables()
  
 # Launch the graph 
 with tf.Session() as sess: 
-	sess.run(init) 
-	step = 1 
-	# Keep training until reach max iterations 
-	while step * batch_size < training_iters: 
-		batch_x, batch_y = mnist.train.next_batch(batch_size) 
-		sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, 
-									   keep_prob: dropout}) 
-		if step % display_step == 0: 
-			# Calculate batch loss and accuracy 
-			loss, acc = sess.run([cost, accuracy], feed_dict={x: batch_x, 
-															  y: batch_y, 
-															keep_prob: 1.})
-			print "Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
-				  "{:.6f}".format(loss) + ", Training Accuracy= " + \
-				  "{:.5f}".format(acc) 
-		step += 1 
-	print "Optimization Finished!" 
+    sess.run(init) 
+    step = 1 
+    # Keep training until reach max iterations 
+    while step * batch_size < training_iters: 
+        batch_x, batch_y = mnist.train.next_batch(batch_size) 
+        sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, 
+                                       keep_prob: dropout}) 
+        if step % display_step == 0: 
+            # Calculate batch loss and accuracy 
+            loss, acc = sess.run([cost, accuracy], feed_dict={x: batch_x, 
+                                                              y: batch_y, 
+                                                            keep_prob: 1.})
+            print "Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
+                  "{:.6f}".format(loss) + ", Training Accuracy= " + \
+                  "{:.5f}".format(acc) 
+        step += 1 
+    print "Optimization Finished!" 
  
-	# Calculate accuracy for 256 mnist test images 
-	print "Testing Accuracy:", \
-		sess.run(accuracy, feed_dict={x: mnist.test.images[:256],
-									  y: mnist.test.labels[:256],
-									  keep_prob: 1.}) 
+    # Calculate accuracy for 256 mnist test images 
+    print "Testing Accuracy:", \
+        sess.run(accuracy, feed_dict={x: mnist.test.images[:256],
+                                      y: mnist.test.labels[:256],
+                                      keep_prob: 1.}) 
